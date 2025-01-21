@@ -1,31 +1,26 @@
 import re
-import string
+import random
 
 my_words = []
+wrong_guesses = 0
 
-def print_words():
+
+def store_words():
     with open ('words.txt', 'rt') as myfile:
         for myword in myfile:
             myword = re.sub('\n', '', myword)
             my_words.append(myword)
             
-            if "r" in myword:
+            if not "r" in myword:
                 print(myword)
-            
-    print(my_words)
+                  
+    print(my_words) 
 
-current_index = 0
-
-def get_letter():
-    global current_index
-    letters = list(string.ascii_lowercase)
-    if current_index < len(letters):
-        letter = letters[current_index]
-        current_index += 1
-        return letter
-    return None   
+def shuffle_words():
+    pass
         
+def main():
+    pass
         
 if __name__ == "__main__":
-    # print_words()
-    get_letter()
+    store_words()
