@@ -10,6 +10,7 @@ fenetre.fill((255, 255, 255))
 continuer = True
 letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
 lettre_utilisé = []#Liste des lettres utilisé
+dashImg = []#Case vide du mot
 word = ""
 perso = pygame.image.load("un_pendu.jpg").convert_alpha()# 108x400 px
 persoRect = perso.get_rect() #crée un rectangle autour d'une image
@@ -18,6 +19,10 @@ police = pygame.font.Font(None, 35)#taille et police
 NOIR = (0, 0, 0)
 flag = 0
 
+def showLines():
+    for i in range (len(word)):
+        dashImg.append(pygame.image.load('minus-sign.png'))
+        fenetre.blit(dashImg[i], (1 * i * 40, 400))
 
 with open('words.txt','r') as file:
     word_list = file.read().splitlines() # Dans le cas d'un fichier où il y a un mot par ligne
@@ -80,7 +85,7 @@ while continuer :
                                 fenetre.blit(perso, persoRect)
                                 continuer = False
                             x += 25
-    
+    showLines()
     pygame.display.update()#mise a jour de l'image a chaque fin de boucle
     if len(lettre_utilisé) == 6:
         pygame.time.wait(4000)
