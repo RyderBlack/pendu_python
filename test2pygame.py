@@ -1,5 +1,6 @@
 import pygame
 from pygame.locals import *
+import random
 
 pygame.init()
 
@@ -9,6 +10,7 @@ fenetre.fill((255, 255, 255))
 continuer = True
 letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
 lettre_utilisé = []#Liste des lettres utilisé
+word = ""
 perso = pygame.image.load("un_pendu.jpg").convert_alpha()# 108x400 px
 persoRect = perso.get_rect() #crée un rectangle autour d'une image
 persoRect.topleft = (327, 120)#dimension du rectangle
@@ -16,6 +18,12 @@ police = pygame.font.Font(None, 35)#taille et police
 NOIR = (0, 0, 0)
 flag = 0
 
+
+with open('words.txt','r') as file:
+    word_list = file.read().splitlines() # Dans le cas d'un fichier où il y a un mot par ligne
+    word = random.choice(word_list)
+
+print(word)
 while continuer :
     for event in pygame.event.get():
         x = 550
