@@ -2,8 +2,8 @@ import re # used in def store_words() to remove '\n' in file list
 import random
 
 my_words = []
-wrong_guesses = 0
 life = 7
+game_state = {"chosen_word" : ""}
 
 def store_words():
     with open ('words.txt', 'rt') as myfile:
@@ -14,10 +14,10 @@ def store_words():
 
 def shuffle_words():
     random.shuffle(my_words)
-    chosen_word = my_words[0]
-    
-    print(chosen_word)
-    return chosen_word
+    # chosen_word = my_words[0]
+    game_state["chosen_word"] = my_words[0]
+    print(game_state['chosen_word'])
+    # return game_state['chosen_word']
 
   
 def dislay_hints():
@@ -48,30 +48,36 @@ def menu():
     print(menu)
     
     
-def wrong_guess():
-    # life = 7
-    pass
+def guess_the_word():
+    letter = input("Guess a letter: ")
+    chosen_word = game_state["chosen_word"]
+    if letter in chosen_word:
+        print(letter)
       
         
 def main():
-    # display menu
-    menu()
-    # open file and store words into list
-    store_words()
-    
-    choice = input("Entrez votre choix: ")
-    #if choice == jouer:
-    if choice == "1":
-        #shuffle the list, grab one word and display hints for this word
-        dislay_hints()
-    #if choice == add_word:
-    elif choice == "2":    
-        add_word()
+    while True:
+        try:
+            # display menu
+            menu()
+            # open file and store words into list
+            store_words()
+            
+            user_choice = input("Entrez votre choix: ")
+            #if choice == jouer:
+            if user_choice == "1":
+                #shuffle the list, grab one word and display hints for this word
+                dislay_hints()
+                guess_the_word()
+            #if choice == add_word:
+            elif user_choice == "2":    
+                add_word()
 
-    else:
-        print("Merci de faire un choix entre 1 et 2.")
-    
-    
+            else:
+                print("Merci de faire un choix entre 1 et 2.")
+        
+        except KeyboardInterrupt:
+            print("Thank you!")
 
         
 if __name__ == "__main__":
