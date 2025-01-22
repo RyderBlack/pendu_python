@@ -1,9 +1,9 @@
-import re
+import re # used in def store_words() to remove '\n' in file list
 import random
 
 my_words = []
 wrong_guesses = 0
-
+life = 7
 
 def store_words():
     with open ('words.txt', 'rt') as myfile:
@@ -17,7 +17,6 @@ def store_words():
     # print(my_words) 
 
 def shuffle_words():
-    global chosen_word
     random.shuffle(my_words)
     chosen_word = my_words[0]
     
@@ -26,20 +25,58 @@ def shuffle_words():
 
   
 def dislay_hints():
-    length_hint = len(chosen_word)
+    shuffling = shuffle_words()
+    length_hint= len(shuffling)
     print("_" * length_hint)
-    return chosen_word
+    return shuffling
+    
+    
+def add_word():
+    added_word = input("entrez votre mot: ").lower()
+       
+    if added_word in my_words:
+            print(f"Le mot {added_word} est déjà dans la liste, merci d'en choisir un autre.")          
+    else:
+        my_words.append(added_word)
+        f = open("words.txt", "a")
+        f.write("\n"+added_word)
+        f.close()
+        print(f"Ajout du mot {my_words[-1]} à la base de donnée.")
+            
+    
+def menu():
+    menu = """
+    1. Jouer
+    2. Ajouter un nouveau mot
+    """
+    print(menu)
     
     
 def wrong_guess():
+    # life = 7
     pass
       
         
 def main():
+    # display menu
+    menu()
+    # open file and store words into list
     store_words()
-    shuffle_words()
-    dislay_hints()
+    
+    choice = input("Entrez votre choix: ")
+    #if choice == jouer:
+    if choice == "1":
+        #shuffle the list, grab one word and display hints for this word
+        dislay_hints()
+    #if choice == add_word:
+    elif choice == "2":    
+        add_word()
+
+    else:
+        print("Merci de faire un choix entre 1 et 2.")
+    
+    
 
         
 if __name__ == "__main__":
-    main()
+    main() 
