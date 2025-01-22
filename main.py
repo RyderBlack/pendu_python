@@ -11,10 +11,6 @@ def store_words():
             myword = re.sub('\n', '', myword)
             my_words.append(myword)
             
-            # if not "r" in myword:
-                # print(myword)
-                  
-    # print(my_words) 
 
 def shuffle_words():
     random.shuffle(my_words)
@@ -38,9 +34,9 @@ def add_word():
             print(f"Le mot {added_word} est déjà dans la liste, merci d'en choisir un autre.")          
     else:
         my_words.append(added_word)
-        f = open("words.txt", "a")
-        f.write("\n"+added_word)
-        f.close()
+        word_file = open("words.txt", "a")
+        word_file.write("\n"+added_word)
+        word_file.close()
         print(f"Ajout du mot {my_words[-1]} à la base de donnée.")
             
     
