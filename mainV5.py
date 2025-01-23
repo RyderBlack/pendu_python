@@ -1,16 +1,28 @@
 import random
 import pygame
 from pygame.locals import *
-
+import sys
 
 pygame.init()
-fenetre = pygame.display.set_mode((640, 480))
-fenetre.fill((255, 255, 255))
+WIDTH, HEIGHT = 540, 900
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Échafaud")
 
+# Charge le background
+background = pygame.image.load("Background_HiRes2.jpg")
+background = pygame.transform.scale(background, (WIDTH, HEIGHT))
 
-perso = pygame.image.load("un_pendu.jpg").convert_alpha() # 108x400 px
-persoRect = perso.get_rect() #crée un rectangle autour d'une image
-persoRect.topleft = (327, 120) #dimension du rectangle
+ # Couleurs
+BLACK = (0, 0, 0)
+BROWN = (139, 69, 19)
+GRAY = (169, 169, 169)
+
+perso = pygame.image.load("pendu_HiRes.png").convert_alpha() # 108x400 px
+# persoRect = perso.get_rect() #crée un rectangle autour d'une image
+# persoRect.topleft = (327, 120) #dimension du rectangle
+
+perso = pygame.transform.scale(perso, (100, 200))  # Adjust based on your needs
+persoRect = perso.get_rect(center=(400, 310))
 
 perso2 = pygame.image.load("its_me.png").convert_alpha()
 persoRect2 = perso.get_rect() #crée un rectangle autour d'une image
@@ -25,8 +37,10 @@ class WordGame:
         self.chosen_word = ""
         self.life = 7
         self.score = 0
+        self.x = 550
+        self.y = 100
         
-        self.continuer = True
+        self.is_running = True
         self.flag = 0
         self.flag2 = 0
         self.enter = 0
@@ -64,46 +78,58 @@ class WordGame:
             print(f"Ajout du mot {self.word_list[-1]} à la base de donnée.")
 
     def show_lines(self):
-        # print("on est dans display")
+        start_x = (WIDTH - (len(self.chosen_word) * 40)) // 2
         
         for i in range(len(self.chosen_word)):
             self.dashImg.append(pygame.image.load('minus-sign.png'))
-            fenetre.blit(self.dashImg[i], (1 * i * 40, 400))
+            screen.blit(self.dashImg[i], (start_x + i * 40, 700))
             
+            # To display the right letters on top of lines
+            for guessed_letter in self.lettre_mot:
+                if guessed_letter in self.chosen_word:
+                    
+                    for position in range(len(self.chosen_word)):
+                        current_letter = self.chosen_word[position]
+                        
+                        if current_letter == guessed_letter:
+                            letter_render = police.render(guessed_letter, True, self.NOIR)
+                            screen.blit(letter_render, (start_x + position * 42, 680))
+                
     def draw(self):
-        print(self.x,self.y)
+        # Draw wrong guesses first
+        self.x = 20 
+        self.y = 20
         for lettre4 in self.lettre_fausse:
             texte = police.render(lettre4, True, self.NOIR)
-            if self.x > 600:
+            if self.x > WIDTH - 40:
                 self.y += 30
-                self.x = 550
-            fenetre.blit(texte, (self.x, self.y))
-            pygame.draw.line(fenetre, self.NOIR, (self.x + 20, self.y), (self.x - 10, self.y + 25))
-            if len(self.lettre_fausse) == 1:
-                pygame.draw.circle(fenetre, self.NOIR, (350, 150), 20)
-            if len(self.lettre_fausse) == 2:
-                pygame.draw.circle(fenetre, self.NOIR, (350, 150), 20)
-                pygame.draw.line(fenetre, self.NOIR, (350, 150), (350, 240))
-            if len(self.lettre_fausse) == 3:
-                pygame.draw.circle(fenetre, self.NOIR, (350, 150), 20)
-                pygame.draw.line(fenetre, self.NOIR, (350, 150), (350, 240))
-                pygame.draw.line(fenetre, self.NOIR, (350, 175), (330, 235))
-            if len(self.lettre_fausse) == 4:
-                pygame.draw.circle(fenetre, self.NOIR, (350, 150), 20)
-                pygame.draw.line(fenetre, self.NOIR, (350, 150), (350, 240))
-                pygame.draw.line(fenetre, self.NOIR, (350, 175), (330, 235))
-                pygame.draw.line(fenetre, self.NOIR, (350, 175), (370, 235))
-            if len(self.lettre_fausse) == 5:
-                pygame.draw.circle(fenetre, self.NOIR, (350, 150), 20)
-                pygame.draw.line(fenetre, self.NOIR, (350, 150), (350, 240))
-                pygame.draw.line(fenetre, self.NOIR, (350, 175), (330, 235))
-                pygame.draw.line(fenetre, self.NOIR, (350, 175), (370, 235))
-                pygame.draw.line(fenetre, self.NOIR, (350, 240), (365, 300))
-            if len(self.lettre_fausse) == 6:
-                fenetre.blit(perso, persoRect)
+                self.x = 20
+            screen.blit(texte, (self.x, self.y))
+            pygame.draw.line(screen, self.NOIR, (self.x + 20, self.y), 
+                           (self.x - 10, self.y + 25))
             self.x += 25
+        if len(self.lettre_fausse) >= 6:
+        # Show final hangman image only
+            scaled_perso = pygame.transform.scale(perso, (100, 160))
+            perso_rect = scaled_perso.get_rect(midtop=(270, 440))
+            screen.blit(scaled_perso, perso_rect)
+        else:
+            if len(self.lettre_fausse) >= 1:
+                pygame.draw.circle(screen, self.NOIR, (270, 465), 20)  # Head
+            if len(self.lettre_fausse) >= 2:
+                pygame.draw.line(screen, self.NOIR, (270, 485), (270, 545), 5)  # Body
+            if len(self.lettre_fausse) >= 3:
+                pygame.draw.line(screen, self.NOIR, (270, 505), (230, 525), 5)  # Left arm
+            if len(self.lettre_fausse) >= 4:
+                pygame.draw.line(screen, self.NOIR, (270, 505), (310, 525), 5)  # Right arm
+            if len(self.lettre_fausse) >= 5:
+                pygame.draw.line(screen, self.NOIR, (270, 545), (240, 575), 5)  # Left leg
+            if len(self.lettre_fausse) >= 6:
+                pygame.draw.line(screen, self.NOIR, (270, 545), (300, 575), 5)  # Right leg
+            
+
      
-    #  NOT YET IMPLEMENTED   
+    #  ===== NOT YET IMPLEMENTED  =====
     def guess_the_word(self):
         while True:
             letter_box = []
@@ -147,16 +173,31 @@ class GameManager:
 
     def run(self):
         self.game.store_words()
-        while self.game.continuer :
+        while self.game.is_running :
             for event in pygame.event.get():
-                self.game.x = 550
-                self.game.y = 100
-                pygame.draw.line(fenetre, (255,0,0), (200, 335), (300, 335))
-                pygame.draw.line(fenetre, (0,255,0), (200, 335), (200, 100))
-                pygame.draw.line(fenetre, (0,0,255), (200, 100), (350, 100))
-                pygame.draw.line(fenetre, self.game.NOIR, (350, 100), (350, 135))
+                
+                # arrière-plan vierge
+                screen.blit(background, (0, 0))
+
+                # L'échafaud
+                pygame.draw.rect(screen, BROWN, (70, 600, 400, 20))  # Plateforme
+                # Poteaux
+                pygame.draw.rect(screen, BROWN, (90, 400, 20, 200))  # Poteau gauche
+                pygame.draw.rect(screen, BROWN, (90, 380, 200, 20))  # Poutre horizontale
+                # Pieds
+                pygame.draw.rect(screen, BROWN, (70, 620, 20, 80))  # Pied gauche avant
+                pygame.draw.rect(screen, BROWN, (450, 620, 20, 80))  # Pied droit avant
+                pygame.draw.rect(screen, BROWN, (90, 620, 20, 80))  # Pied gauche arrière
+                pygame.draw.rect(screen, BROWN, (430, 620, 20, 80))  # Pied droit arrière
+                # Escalier
+                for i in range(5):
+                    pygame.draw.rect(screen, BROWN, (50, 620 + i * 20, 80, 10))
+                # Corde
+                pygame.draw.line(screen, GRAY, (270, 380), (270, 460), 5)  # Ligne de la corde
+                pygame.draw.circle(screen, BLACK, (270, 470), 10)  # Noeud de la corde
+                
                 if event.type == QUIT:
-                    self.game.continuer = False
+                    self.game.is_running = False
                 if event.type == KEYDOWN: #Si une touche est enfoncé
                     for letter in self.game.letters:
                         if letter == event.unicode.lower():
@@ -168,7 +209,6 @@ class GameManager:
                                         break
                                 if self.game.flag == 0:
                                     self.game.lettre_utilisé.append(event.unicode.lower())
-                                    fenetre.fill((255, 255, 255))
                                     self.game.enter = 1
                                 else :
                                     self.game.flag = 0
@@ -180,14 +220,13 @@ class GameManager:
                                         self.game.you.append(event.unicode.lower())
                                         self.game.are += 1
                                         if len(self.game.who) == len(self.game.you):
-                                            fenetre.blit(perso2, persoRect2)
-                                            self.game.continuer = False
+                                            screen.blit(perso2, persoRect2)
+                                            self.game.is_running = False
                                             pygame.display.update()
                                             pygame.time.wait(500)
                                     elif letter in self.game.chosen_word:
                                         print("yes")
                                         self.game.lettre_mot.append(event.unicode.lower())
-                                        fenetre.fill((255, 255, 255))
                                         print(f"ceci est {self.game.lettre_mot}")
                                         self.game.draw()
                                     else:
@@ -204,12 +243,14 @@ class GameManager:
                                 print(self.game.lettre_fausse)
                                 print(self.game.lettre_mot)
                                 print(self.game.you)
+            self.game.draw()         
             self.game.show_lines()
-            pygame.display.update() #mise a jour de l'image a chaque fin de boucle
+            pygame.display.flip() #mise a jour de l'image a chaque fin de boucle
             if len(self.game.lettre_fausse) == 6:
                 pygame.time.wait(3500)
-                self.game.continuer = False
+                self.game.is_running = False
         pygame.quit()
+        sys.exit
 
         # while True:
         #     try:
