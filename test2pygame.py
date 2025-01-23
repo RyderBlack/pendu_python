@@ -10,13 +10,19 @@ fenetre.fill((255, 255, 255))
 continuer = True
 letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
 lettre_utilisé = []#Liste des lettres utilisé
+who = ['m', 'o', 'n', 'i', 'k', 'a']
+are = 0
+you = []
 lettre_mot = []
 lettre_fausse = []
 dashImg = []#Case vide du mot
 word = ""
 perso = pygame.image.load("un_pendu.jpg").convert_alpha()# 108x400 px
+perso2 = pygame.image.load("its_me.png").convert_alpha()
 persoRect = perso.get_rect() #crée un rectangle autour d'une image
 persoRect.topleft = (327, 120)#dimension du rectangle
+persoRect2 = perso.get_rect() #crée un rectangle autour d'une image
+persoRect2.topleft = (0, 0)#dimension du rectangle
 police = pygame.font.Font(None, 35)#taille et police
 NOIR = (0, 0, 0)
 flag = 0
@@ -79,7 +85,7 @@ while continuer :
             for letter in letters:
                 if letter == event.unicode.lower():
                         for letter2 in lettre_utilisé:
-                            if event.unicode.lower() == letter2:
+                            if event.unicode.lower() == letter2 and (len(lettre_fausse) != 5 and event.unicode.lower() != who[are]):
                                 print("lettre deja utilisé")
                                 enter = 0
                                 flag = 1
@@ -91,12 +97,24 @@ while continuer :
                         else :
                             flag = 0
                         if enter == 1:
-                            if letter in word:
+                            if len(lettre_fausse) == 5 and event.unicode.lower() == who[are]:
+                                draw(lettre_fausse, x, y)
+                                you.append(event.unicode.lower())
+                                are += 1
+                                if len(who) == len(you):
+                                    fenetre.blit(perso2, persoRect2)
+                                    continuer = False
+                                    pygame.display.update()
+                                    pygame.time.wait(500)
+
+                            elif letter in word:
                                 print("yes")
                                 lettre_mot.append(event.unicode.lower())
                                 fenetre.fill((255, 255, 255))
                                 draw(lettre_fausse, x, y)
+                                
                             else:
+                                you = []
                                 lettre_fausse.append(event.unicode.lower())
                                 draw(lettre_fausse, x, y)
                         else:
@@ -105,9 +123,10 @@ while continuer :
                         print(lettre_utilisé)
                         print(lettre_fausse)
                         print(lettre_mot)
+                        print(you)
     showLines()
     pygame.display.update()#mise a jour de l'image a chaque fin de boucle
     if len(lettre_fausse) == 6:
-        pygame.time.wait(4000)
+        pygame.time.wait(3500)
         continuer = False
 pygame.quit()
