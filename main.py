@@ -16,13 +16,13 @@ def shuffle_words():
     random.shuffle(my_words)
     # chosen_word = my_words[0]
     game_state["chosen_word"] = my_words[0]
-    print(game_state['chosen_word'])
-    # return game_state['chosen_word']
+    print(f"Le mot choisi est: {game_state['chosen_word']}")
+    return game_state['chosen_word']
 
   
 def dislay_hints():
     shuffling = shuffle_words()
-    length_hint= len(shuffling)
+    length_hint = len(shuffling)
     print("_" * length_hint)
     return shuffling
     
@@ -49,10 +49,18 @@ def menu():
     
     
 def guess_the_word():
-    letter = input("Guess a letter: ")
-    chosen_word = game_state["chosen_word"]
-    if letter in chosen_word:
-        print(letter)
+    life = 7
+    while True:
+        letter = input("Devine une lettre: ")
+        if letter in game_state['chosen_word']:
+            print(f"GG! la lettre {letter} est bien dans le mot à deviner!")
+            print(life)
+        else: 
+            life -= 1
+            print("Nope! image N du pendu ici")
+            print(life)
+            if life == 0:
+                print("déso mais t'as perdu!")
       
         
 def main():
@@ -78,6 +86,7 @@ def main():
         
         except KeyboardInterrupt:
             print("Thank you!")
+            break
 
         
 if __name__ == "__main__":

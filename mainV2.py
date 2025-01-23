@@ -33,7 +33,7 @@ class WordGame:
         self.chosen_word = self.my_words[0]
         print(f"Le mot choisi est: {self.chosen_word}")
         return self.chosen_word
-    
+
     def display_hints(self):
         length_hint = len(self.chosen_word)
         print("_" * length_hint)
@@ -41,14 +41,23 @@ class WordGame:
         
     def guess_the_word(self):
         while True:
+            letter_box = []
             letter = input("Devine une lettre: ")
             if letter in self.chosen_word:
                 print(f"GG! la lettre {letter} est bien dans le mot à deviner!")
                 self.score += 1
                 print(f"Ton score est maintenant de {self.score}")
+                letter_box.append(letter)
+                
                 if self.score == len(self.chosen_word):
                     print("OMG! T'as gagné la game!")
                     break
+                
+                elif letter in letter_box:
+                    print("Cette lettre a déjà été devinée")
+                    print(f"le score est toujours de {self.score}")
+                
+            
             else: 
                 self.life -= 1
                 print("Nope! image N du pendu ici")
