@@ -10,6 +10,8 @@ fenetre.fill((255, 255, 255))
 continuer = True
 letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
 lettre_utilisé = []#Liste des lettres utilisé
+lettre_mot = []
+lettre_fausse = []
 dashImg = []#Case vide du mot
 word = ""
 perso = pygame.image.load("un_pendu.jpg").convert_alpha()# 108x400 px
@@ -18,11 +20,45 @@ persoRect.topleft = (327, 120)#dimension du rectangle
 police = pygame.font.Font(None, 35)#taille et police
 NOIR = (0, 0, 0)
 flag = 0
+flag2 = 0
+enter = 0
 
 def showLines():
     for i in range (len(word)):
         dashImg.append(pygame.image.load('minus-sign.png'))
         fenetre.blit(dashImg[i], (1 * i * 40, 400))
+
+def draw(lettre_fausse, x, y):
+    for lettre4 in lettre_fausse:
+        texte = police.render(lettre4, True, NOIR)
+        if x > 600:
+            y += 30
+            x = 550
+        fenetre.blit(texte, (x, y))
+        pygame.draw.line(fenetre, NOIR, (x + 20, y), (x - 10, y + 25))
+        if len(lettre_fausse) == 1:
+            pygame.draw.circle(fenetre, NOIR, (350, 150), 20)
+        if len(lettre_fausse) == 2:
+            pygame.draw.circle(fenetre, NOIR, (350, 150), 20)
+            pygame.draw.line(fenetre, NOIR, (350, 150), (350, 240))
+        if len(lettre_fausse) == 3:
+            pygame.draw.circle(fenetre, NOIR, (350, 150), 20)
+            pygame.draw.line(fenetre, NOIR, (350, 150), (350, 240))
+            pygame.draw.line(fenetre, NOIR, (350, 175), (330, 235))
+        if len(lettre_fausse) == 4:
+            pygame.draw.circle(fenetre, NOIR, (350, 150), 20)
+            pygame.draw.line(fenetre, NOIR, (350, 150), (350, 240))
+            pygame.draw.line(fenetre, NOIR, (350, 175), (330, 235))
+            pygame.draw.line(fenetre, NOIR, (350, 175), (370, 235))
+        if len(lettre_fausse) == 5:
+            pygame.draw.circle(fenetre, NOIR, (350, 150), 20)
+            pygame.draw.line(fenetre, NOIR, (350, 150), (350, 240))
+            pygame.draw.line(fenetre, NOIR, (350, 175), (330, 235))
+            pygame.draw.line(fenetre, NOIR, (350, 175), (370, 235))
+            pygame.draw.line(fenetre, NOIR, (350, 240), (365, 300))
+        if len(lettre_fausse) == 6:
+            fenetre.blit(perso, persoRect)
+        x += 25
 
 with open('words.txt','r') as file:
     word_list = file.read().splitlines() # Dans le cas d'un fichier où il y a un mot par ligne
@@ -40,53 +76,38 @@ while continuer :
         if event.type == QUIT:
             continuer = False
         if event.type == KEYDOWN: #Si une touche est enfoncé
-             for letter in letters:
+            for letter in letters:
                 if letter == event.unicode.lower():
                         for letter2 in lettre_utilisé:
                             if event.unicode.lower() == letter2:
                                 print("lettre deja utilisé")
+                                enter = 0
                                 flag = 1
                                 break
                         if flag == 0:
                             lettre_utilisé.append(event.unicode.lower())
                             fenetre.fill((255, 255, 255))
+                            enter = 1
                         else :
                             flag = 0
+                        if enter == 1:
+                            if letter in word:
+                                print("yes")
+                                lettre_mot.append(event.unicode.lower())
+                                fenetre.fill((255, 255, 255))
+                                draw(lettre_fausse, x, y)
+                            else:
+                                lettre_fausse.append(event.unicode.lower())
+                                draw(lettre_fausse, x, y)
+                        else:
+                            enter = 0
                         print("Vous avez tapé {}".format(event.unicode))
                         print(lettre_utilisé)
-                        for lettre in lettre_utilisé:
-                            texte = police.render(lettre, True, NOIR)
-                            if x > 600:
-                                y += 30
-                                x = 550
-                            fenetre.blit(texte, (x, y))
-                            pygame.draw.line(fenetre, NOIR, (x + 20, y), (x - 10, y + 25))
-                            if len(lettre_utilisé) == 1:
-                                pygame.draw.circle(fenetre, NOIR, (350, 150), 20)
-                            if len(lettre_utilisé) == 2:
-                                pygame.draw.circle(fenetre, NOIR, (350, 150), 20)
-                                pygame.draw.line(fenetre, NOIR, (350, 150), (350, 240))
-                            if len(lettre_utilisé) == 3:
-                                pygame.draw.circle(fenetre, NOIR, (350, 150), 20)
-                                pygame.draw.line(fenetre, NOIR, (350, 150), (350, 240))
-                                pygame.draw.line(fenetre, NOIR, (350, 175), (330, 235))
-                            if len(lettre_utilisé) == 4:
-                                pygame.draw.circle(fenetre, NOIR, (350, 150), 20)
-                                pygame.draw.line(fenetre, NOIR, (350, 150), (350, 240))
-                                pygame.draw.line(fenetre, NOIR, (350, 175), (330, 235))
-                                pygame.draw.line(fenetre, NOIR, (350, 175), (370, 235))
-                            if len(lettre_utilisé) == 5:
-                                pygame.draw.circle(fenetre, NOIR, (350, 150), 20)
-                                pygame.draw.line(fenetre, NOIR, (350, 150), (350, 240))
-                                pygame.draw.line(fenetre, NOIR, (350, 175), (330, 235))
-                                pygame.draw.line(fenetre, NOIR, (350, 175), (370, 235))
-                                pygame.draw.line(fenetre, NOIR, (350, 240), (365, 300))
-                            if len(lettre_utilisé) == 6:
-                                fenetre.blit(perso, persoRect)
-                                continuer = False
-                            x += 25
+                        print(lettre_fausse)
+                        print(lettre_mot)
     showLines()
     pygame.display.update()#mise a jour de l'image a chaque fin de boucle
-    if len(lettre_utilisé) == 6:
+    if len(lettre_fausse) == 6:
         pygame.time.wait(4000)
+        continuer = False
 pygame.quit()
