@@ -2,18 +2,17 @@ import random
 import pygame
 from pygame.locals import *
 
-
+pygame.init()
 fenetre = pygame.display.set_mode((640, 480))
 fenetre.fill((255, 255, 255))
 
 
-
 perso = pygame.image.load("un_pendu.jpg").convert_alpha() # 108x400 px
+perso2 = pygame.image.load("its_me.png").convert_alpha()
 persoRect = perso.get_rect() #crée un rectangle autour d'une image
 persoRect.topleft = (327, 120) #dimension du rectangle
-pygame.font.init()
-police = pygame.font.Font(None, 35) #taille et police
 
+police = pygame.font.Font(None, 35) #taille et police
 
 
 class WordGame:
@@ -32,6 +31,13 @@ class WordGame:
         self.letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
         self.lettre_mot = []
         self.lettre_fausse = []
+        self.x = 0
+        self.y = 0
+        
+        self.who = ['m', 'o', 'n', 'i', 'k', 'a']
+        self.are = 0
+        self.you = []
+        
         
         self.NOIR = (0, 0, 0)
         
@@ -60,15 +66,15 @@ class WordGame:
             self.dashImg.append(pygame.image.load('minus-sign.png'))
             fenetre.blit(self.dashImg[i], (1 * i * 40, 400))
             
-    def draw(self, x, y):
-        print(x,y)
+    def draw(self):
+        print(self.x,self.y)
         for lettre4 in self.lettre_fausse:
             texte = police.render(lettre4, True, self.NOIR)
-            if x > 600:
-                y += 30
-                x = 550
-            fenetre.blit(texte, (x, y))
-            pygame.draw.line(fenetre, self.NOIR, (x + 20, y), (x - 10, y + 25))
+            if self.x > 600:
+                self.y += 30
+                self.x = 550
+            fenetre.blit(texte, (self.x, self.y))
+            pygame.draw.line(fenetre, self.NOIR, (self.x + 20, self.y), (self.x - 10, self.y + 25))
             if len(self.lettre_fausse) == 1:
                 pygame.draw.circle(fenetre, self.NOIR, (350, 150), 20)
             if len(self.lettre_fausse) == 2:
@@ -91,7 +97,7 @@ class WordGame:
                 pygame.draw.line(fenetre, self.NOIR, (350, 240), (365, 300))
             if len(self.lettre_fausse) == 6:
                 fenetre.blit(perso, persoRect)
-            x += 25
+            self.x += 25
      
     #  NOT YET IMPLEMENTED   
     def guess_the_word(self):
@@ -125,6 +131,7 @@ class WordGame:
         menu = """
         1. Jouer
         2. Ajouter un nouveau mot
+        3. Choix du mode
         """
         print(menu)      
     
@@ -138,8 +145,8 @@ class GameManager:
         self.game.store_words()
         while self.game.continuer :
             for event in pygame.event.get():
-                x = 550
-                y = 100
+                self.game.x = 550
+                self.game.y = 100
                 pygame.draw.line(fenetre, self.game.NOIR, (200, 335), (300, 335))
                 pygame.draw.line(fenetre, self.game.NOIR, (200, 335), (200, 100))
                 pygame.draw.line(fenetre, self.game.NOIR, (200, 100), (350, 100))
@@ -167,10 +174,13 @@ class GameManager:
                                         print("yes")
                                         self.game.lettre_mot.append(event.unicode.lower())
                                         fenetre.fill((255, 255, 255))
-                                        self.game.draw(self.game.lettre_fausse, x, y)
+                                        print(f"ceci est {self.game.lettre_mot}")
+                                        self.game.draw()
                                     else:
+                                        print("Nope!")
                                         self.game.lettre_fausse.append(event.unicode.lower())
-                                        self.game.draw(self.game.lettre_fausse, x, y)
+                                        print(f"ceci est {self.game.lettre_mot}")
+                                        self.game.draw()
                                 else:
                                     self.enter = 0
                                 print("Vous avez tapé {}".format(event.unicode))
@@ -181,7 +191,8 @@ class GameManager:
             self.game.show_lines()
             pygame.display.update()#mise a jour de l'image a chaque fin de boucle
             if len(self.game.lettre_fausse) == 6:
-                pygame.time.wait(4000)
+                pygame.time.wait(3500)
+                self.game.continuer = False
         pygame.quit()
 
         # while True:
