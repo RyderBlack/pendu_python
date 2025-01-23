@@ -85,7 +85,7 @@ while continuer :
             for letter in letters:
                 if letter == event.unicode.lower():
                         for letter2 in lettre_utilisé:
-                            if event.unicode.lower() == letter2 and (len(lettre_fausse) != 5 and event.unicode.lower() != who[are]):
+                            if event.unicode.lower() == letter2 and len(lettre_fausse) != 5 and event.unicode.lower() != who[are]:
                                 print("lettre deja utilisé")
                                 enter = 0
                                 flag = 1
@@ -109,12 +109,13 @@ while continuer :
 
                             elif letter in word:
                                 print("yes")
+                                you = []
+                                are = 0
                                 lettre_mot.append(event.unicode.lower())
                                 fenetre.fill((255, 255, 255))
                                 draw(lettre_fausse, x, y)
                                 
                             else:
-                                you = []
                                 lettre_fausse.append(event.unicode.lower())
                                 draw(lettre_fausse, x, y)
                         else:
