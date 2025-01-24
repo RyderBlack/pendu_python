@@ -19,7 +19,7 @@ GRAY = (169, 169, 169)
 
 perso = pygame.image.load("un_pendu2.png").convert_alpha() # 108x400 px
 persoRect = perso.get_rect() #crée un rectangle autour d'une image
-persoRect.topleft = (327, 120) #dimension du rectangle
+persoRect.topleft = (450, 420) #dimension du rectangle
 
 #perso = pygame.transform.scale(perso, (80, 200))  # Adjust based on your needs
 #persoRect = perso.get_rect(center=(400, 310))
@@ -82,7 +82,7 @@ class WordGame:
         
         for i in range(len(self.chosen_word)):
             self.dashImg.append(pygame.image.load('minus-sign.png'))
-            screen.blit(self.dashImg[i], (start_x + i * 40, 700))
+            screen.blit(self.dashImg[i], (start_x + i * 40, 300))
             
             # To display the right letters on top of the lines
             for guessed_letter in self.lettre_mot:
@@ -93,7 +93,7 @@ class WordGame:
                         
                         if current_letter == guessed_letter:
                             letter_render = police.render(guessed_letter, True, self.NOIR)
-                            screen.blit(letter_render, (start_x + position * 42, 680))
+                            screen.blit(letter_render, (start_x + position * 42, 280))
                 
     def draw(self):
         # Draw wrong guesses first
@@ -115,17 +115,17 @@ class WordGame:
             screen.blit(perso, persoRect)
         else:
             if len(self.lettre_fausse) >= 1:
-                pygame.draw.circle(screen, self.NOIR, (270, 465), 20)  # Head
+                pygame.draw.circle(screen, self.NOIR, (470, 465), 15)  # Head
             if len(self.lettre_fausse) >= 2:
-                pygame.draw.line(screen, self.NOIR, (270, 485), (270, 545), 5)  # Body
+                pygame.draw.line(screen, self.NOIR, (470, 480), (470, 540), 5)  # Body
             if len(self.lettre_fausse) >= 3:
-                pygame.draw.line(screen, self.NOIR, (270, 505), (230, 525), 5)  # Left arm
+                pygame.draw.line(screen, self.NOIR, (470, 500), (430, 520), 5)  # Left arm
             if len(self.lettre_fausse) >= 4:
-                pygame.draw.line(screen, self.NOIR, (270, 505), (310, 525), 5)  # Right arm
+                pygame.draw.line(screen, self.NOIR, (470, 500), (510, 520), 5)  # Right arm
             if len(self.lettre_fausse) >= 5:
-                pygame.draw.line(screen, self.NOIR, (270, 545), (240, 575), 5)  # Left leg
+                pygame.draw.line(screen, self.NOIR, (470, 540), (440, 570), 5)  # Left leg
             if len(self.lettre_fausse) >= 6:
-                pygame.draw.line(screen, self.NOIR, (270, 545), (300, 575), 5)  # Right leg
+                pygame.draw.line(screen, self.NOIR, (470, 540), (500, 570), 5)  # Right leg
             
 
      
@@ -172,6 +172,11 @@ class GameManager:
         self.game = WordGame()
 
     def run(self):
+        
+        
+        
+        
+        
         self.game.store_words()
         while self.game.is_running :
             for event in pygame.event.get():
@@ -180,21 +185,21 @@ class GameManager:
                 screen.blit(background, (0, 0))
 
                 # L'échafaud
-                pygame.draw.rect(screen, BROWN, (70, 600, 400, 20))  # Plateforme
+                pygame.draw.rect(screen, BROWN, (250, 600, 400, 20))  # Plateforme
                 # Poteaux
-                pygame.draw.rect(screen, BROWN, (90, 400, 20, 200))  # Poteau gauche
-                pygame.draw.rect(screen, BROWN, (90, 380, 200, 20))  # Poutre horizontale
+                pygame.draw.rect(screen, BROWN, (250, 400, 20, 200))  # Poteau gauche
+                pygame.draw.rect(screen, BROWN, (250, 380, 250, 20))  # Poutre horizontale
                 # Pieds
-                pygame.draw.rect(screen, BROWN, (70, 620, 20, 80))  # Pied gauche avant
-                pygame.draw.rect(screen, BROWN, (450, 620, 20, 80))  # Pied droit avant
-                pygame.draw.rect(screen, BROWN, (90, 620, 20, 80))  # Pied gauche arrière
-                pygame.draw.rect(screen, BROWN, (430, 620, 20, 80))  # Pied droit arrière
+                pygame.draw.rect(screen, BROWN, (320, 620, 20, 80))  # Pied gauche avant
+                pygame.draw.rect(screen, BROWN, (630, 620, 20, 80))  # Pied droit avant
+                pygame.draw.rect(screen, BROWN, (250, 620, 20, 80))  # Pied gauche arrière
+                pygame.draw.rect(screen, BROWN, (580, 620, 20, 80))  # Pied droit arrière
                 # Escalier
                 for i in range(5):
-                    pygame.draw.rect(screen, BROWN, (50, 620 + i * 20, 80, 10))
+                    pygame.draw.rect(screen, BROWN, (220, 620 + i * 20, 80, 10))
                 # Corde
-                pygame.draw.line(screen, GRAY, (270, 380), (270, 460), 5)  # Ligne de la corde
-                pygame.draw.circle(screen, BLACK, (270, 470), 10)  # Noeud de la corde
+                pygame.draw.line(screen, GRAY, (470, 380), (470, 460), 5)  # Ligne de la corde
+                pygame.draw.circle(screen, BLACK, (470, 470), 10)  # Noeud de la corde
                 
                 if event.type == QUIT:
                     self.game.is_running = False
