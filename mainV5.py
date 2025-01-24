@@ -4,7 +4,7 @@ from pygame.locals import *
 import sys
 
 pygame.init()
-WIDTH, HEIGHT = 540, 900
+WIDTH, HEIGHT = 930, 800
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Échafaud")
 
@@ -17,12 +17,12 @@ BLACK = (0, 0, 0)
 BROWN = (139, 69, 19)
 GRAY = (169, 169, 169)
 
-perso = pygame.image.load("pendu_HiRes.png").convert_alpha() # 108x400 px
-# persoRect = perso.get_rect() #crée un rectangle autour d'une image
-# persoRect.topleft = (327, 120) #dimension du rectangle
+perso = pygame.image.load("un_pendu2.png").convert_alpha() # 108x400 px
+persoRect = perso.get_rect() #crée un rectangle autour d'une image
+persoRect.topleft = (327, 120) #dimension du rectangle
 
-perso = pygame.transform.scale(perso, (100, 200))  # Adjust based on your needs
-persoRect = perso.get_rect(center=(400, 310))
+# perso = pygame.transform.scale(perso, (100, 200))  # Adjust based on your needs
+# persoRect = perso.get_rect(center=(400, 310))
 
 perso2 = pygame.image.load("its_me.png").convert_alpha()
 persoRect2 = perso.get_rect() #crée un rectangle autour d'une image
@@ -84,7 +84,7 @@ class WordGame:
             self.dashImg.append(pygame.image.load('minus-sign.png'))
             screen.blit(self.dashImg[i], (start_x + i * 40, 700))
             
-            # To display the right letters on top of lines
+            # To display the right letters on top of the lines
             for guessed_letter in self.lettre_mot:
                 if guessed_letter in self.chosen_word:
                     
