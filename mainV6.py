@@ -73,7 +73,12 @@ class WordGame:
     def add_word(self):
         added_word = ""
         greeting_text = "Bienvenue! Entrez un nouveau mot et appuyez sur Entrée :"
-
+        input_box = pygame.Rect(10, 60, 500, 100)  # Create a rectangle for the input field
+        active_color = (0, 205, 0)  # Color of the input box when active
+        inactive_color = (200, 200, 200)  # Color of the input box when inactive
+        input_box_color = inactive_color  # Start as inactive
+        background_color = (30, 30, 30)  # A dark background color for the screen
+    
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -81,8 +86,9 @@ class WordGame:
                     sys.exit()
 
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_RETURN:  # Handle Enter key
-                        if added_word.strip():  # Ensure the word is not empty
+                    input_box_color = active_color 
+                    if event.key == pygame.K_RETURN:
+                        if added_word.strip():
                             if added_word in self.word_list:
                                 print(f"Le mot '{added_word}' est déjà dans la liste, merci d'en choisir un autre.")
                             else:
@@ -90,24 +96,33 @@ class WordGame:
                                 with open("words.txt", "a") as word_file:
                                     word_file.write("\n" + added_word)
                                 print(f"Ajout du mot '{added_word}' à la base de données.")
-                            return  # Exit the function after adding the word
-                    elif event.key == pygame.K_BACKSPACE:  # Handle backspace
+                            return
+                    elif event.key == pygame.K_BACKSPACE:
                         added_word = added_word[:-1]
-                    elif event.unicode.isalpha():  # Only allow alphabetic characters
+                    elif event.unicode.isalpha():  # Only alphabetic characters !
                         added_word += event.unicode.lower()
 
             # Draw the screen
-            screen.fill((0, 0, 0))  # Clear the screen with a black background
+            screen.fill(background_color)  # Fill the screen with the background color
 
-            # Render the greeting text
-            greeting_surface = font.render(greeting_text, True, (255, 255, 255))
+            # Draw a background image (optional, if you have one)
+            # background_image = pygame.image.load("your_background_image.jpg")
+            # screen.blit(background_image, (0, 0))
+
+            # Render the greeting text with a smaller font size
+            greeting_font = pygame.font.SysFont("arial", 30)
+            greeting_surface = greeting_font.render(greeting_text, True, (255, 255, 255))
             screen.blit(greeting_surface, (10, 10))
 
-            # Render the user's input
+            # Draw the input box
+            pygame.draw.rect(screen, input_box_color, input_box, 2)  # Draw a rectangle (border only)
+
+            # Render the user's input inside the input box
             input_surface = font.render(added_word, True, (255, 255, 255))
-            screen.blit(input_surface, (10, 60))
+            screen.blit(input_surface, (input_box.x + 10, input_box.y + 10))
 
             pygame.display.flip()
+            
 
     def show_lines(self):
         start_x = (WIDTH - (len(self.chosen_word) * 40)) // 2
