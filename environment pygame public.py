@@ -49,6 +49,7 @@ def update_animations(animations, max_movement):
 def execution():
     
     pygame.init()
+    pygame.mixer.init()
 
     # Dimensions de la fenêtre
     width, height = 800, 600
@@ -58,6 +59,9 @@ def execution():
     # Charge le background
     background = pygame.image.load("pendaison.jpg")
     background = pygame.transform.scale(background, (width, height))
+    # Charge la musique d'ambiance
+    pygame.mixer.music.load('ost.mp3')
+    pygame.mixer.music.play(-1)
 
     # Couleurs
     BLACK = (0, 0, 0)
