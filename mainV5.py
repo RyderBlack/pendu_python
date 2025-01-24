@@ -21,8 +21,8 @@ perso = pygame.image.load("un_pendu2.png").convert_alpha() # 108x400 px
 persoRect = perso.get_rect() #crée un rectangle autour d'une image
 persoRect.topleft = (327, 120) #dimension du rectangle
 
-# perso = pygame.transform.scale(perso, (100, 200))  # Adjust based on your needs
-# persoRect = perso.get_rect(center=(400, 310))
+#perso = pygame.transform.scale(perso, (80, 200))  # Adjust based on your needs
+#persoRect = perso.get_rect(center=(400, 310))
 
 perso2 = pygame.image.load("its_me.png").convert_alpha()
 persoRect2 = perso.get_rect() #crée un rectangle autour d'une image
@@ -110,9 +110,9 @@ class WordGame:
             self.x += 25
         if len(self.lettre_fausse) >= 6:
         # Show final hangman image only
-            scaled_perso = pygame.transform.scale(perso, (100, 160))
-            perso_rect = scaled_perso.get_rect(midtop=(270, 440))
-            screen.blit(scaled_perso, perso_rect)
+            #scaled_perso = pygame.transform.scale(perso, (100, 160))
+            #perso_rect = scaled_perso.get_rect(midtop=(270, 440))
+            screen.blit(perso, persoRect)
         else:
             if len(self.lettre_fausse) >= 1:
                 pygame.draw.circle(screen, self.NOIR, (270, 465), 20)  # Head
