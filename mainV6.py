@@ -3,32 +3,31 @@ import pygame
 from pygame.locals import *
 import sys
 
+# pygame init and screen 
 pygame.init()
 WIDTH, HEIGHT = 930, 800
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Échafaud")
-
-# Charge le background
 background = pygame.image.load("Background_HiRes2.jpg")
 background = pygame.transform.scale(background, (WIDTH, HEIGHT))
 
- # Couleurs
+# COLORS
 BLACK = (0, 0, 0)
 BROWN = (139, 69, 19)
 GRAY = (169, 169, 169)
 
+# Secret ending asset if failed game
 perso = pygame.image.load("un_pendu2.png").convert_alpha() # 108x400 px
 persoRect = perso.get_rect() #crée un rectangle autour d'une image
 persoRect.topleft = (450, 420) #dimension du rectangle
 
-#perso = pygame.transform.scale(perso, (80, 200))  # Adjust based on your needs
-#persoRect = perso.get_rect(center=(400, 310))
-
+# Secret ending asset for hardcore mode
 perso2 = pygame.image.load("its_me.png").convert_alpha()
-persoRect2 = perso.get_rect() #crée un rectangle autour d'une image
-persoRect2.topleft = (0, 0)#dimension du rectangle
+persoRect2 = perso.get_rect() 
+persoRect2.topleft = (0, 0) 
 
-police = pygame.font.Font(None, 35) #taille et police
+# FONT & TEXT
+police = pygame.font.Font(None, 35)
 font = pygame.font.SysFont("arialblack", 40)
 TEXT_COL = (255,255,255)
 
@@ -36,7 +35,8 @@ def draw_text(text,font,text_col,x,y):
     img = font.render(text, True, text_col)
     screen.blit(img, (x,y))
     
-    
+ 
+# Main Game Class   
 class WordGame:
     def __init__(self):
         self.word_list = []
@@ -50,8 +50,8 @@ class WordGame:
         self.flag = 0
         self.flag2 = 0
         self.enter = 0
-        self.lettre_utilisé = [] #Liste des lettres utilisé
-        self.dashImg = [] #Case vide du mot
+        self.lettre_utilisé = []
+        self.dashImg = []
         self.letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
         self.lettre_mot = []
         self.lettre_fausse = []
@@ -63,21 +63,23 @@ class WordGame:
         self.you = []
         
         self.NOIR = (0, 0, 0)
-        
+    
+    #store the words.txt words and choose a random one    
     def store_words(self):
         with open('words.txt','r') as file:
-            self.word_list = file.read().splitlines() # Dans le cas d'un fichier où il y a un mot par ligne
+            self.word_list = file.read().splitlines()
             self.chosen_word = random.choice(self.word_list)
             print(self.chosen_word)
-            
+    
+    # display an input screen and add a new word in word_list AND in words.txt file       
     def add_word(self):
         added_word = ""
         greeting_text = "Bienvenue! Entrez un nouveau mot et appuyez sur Entrée :"
-        input_box = pygame.Rect(10, 60, 500, 100)  # Create a rectangle for the input field
-        active_color = (0, 205, 0)  # Color of the input box when active
-        inactive_color = (200, 200, 200)  # Color of the input box when inactive
-        input_box_color = inactive_color  # Start as inactive
-        background_color = (30, 30, 30)  # A dark background color for the screen
+        input_box = pygame.Rect(10, 60, 500, 100)
+        active_color = (0, 205, 0) 
+        inactive_color = (200, 200, 200) 
+        input_box_color = inactive_color
+        background_color = (30, 30, 30) 
     
         while True:
             for event in pygame.event.get():
@@ -99,31 +101,21 @@ class WordGame:
                             return
                     elif event.key == pygame.K_BACKSPACE:
                         added_word = added_word[:-1]
-                    elif event.unicode.isalpha():  # Only alphabetic characters !
+                    elif event.unicode.isalpha():  # isalpha is for only alphabetic characters !
                         added_word += event.unicode.lower()
 
-            # Draw the screen
-            screen.fill(background_color)  # Fill the screen with the background color
-
-            # Draw a background image (optional, if you have one)
-            # background_image = pygame.image.load("your_background_image.jpg")
-            # screen.blit(background_image, (0, 0))
-
-            # Render the greeting text with a smaller font size
+            screen.fill(background_color)  
             greeting_font = pygame.font.SysFont("arial", 30)
             greeting_surface = greeting_font.render(greeting_text, True, (255, 255, 255))
             screen.blit(greeting_surface, (10, 10))
 
-            # Draw the input box
-            pygame.draw.rect(screen, input_box_color, input_box, 2)  # Draw a rectangle (border only)
-
-            # Render the user's input inside the input box
+            pygame.draw.rect(screen, input_box_color, input_box, 2) 
             input_surface = font.render(added_word, True, (255, 255, 255))
             screen.blit(input_surface, (input_box.x + 10, input_box.y + 10))
 
             pygame.display.flip()
             
-
+    # Display the lines below the letters and show guessed letters as well
     def show_lines(self):
         start_x = (WIDTH - (len(self.chosen_word) * 40)) // 2
         
@@ -141,9 +133,9 @@ class WordGame:
                         if current_letter == guessed_letter:
                             letter_render = police.render(guessed_letter, True, self.NOIR)
                             screen.blit(letter_render, (start_x + position * 42, 280))
-                
+    
+    # Draw the full hangman body            
     def draw(self):
-        # Draw wrong guesses first
         self.x = 50 
         self.y = 50
         for lettre4 in self.lettre_fausse:
@@ -155,9 +147,12 @@ class WordGame:
             pygame.draw.line(screen, self.NOIR, (self.x + 20, self.y), 
                            (self.x - 10, self.y + 25))
             self.x += 25
+            
+        # To display secret asset #1
         if len(self.lettre_fausse) >= 6:
             screen.blit(perso, persoRect)
             
+        # Display the hangman body parts HERE    
         else:
             if len(self.lettre_fausse) >= 1:
                 pygame.draw.circle(screen, self.NOIR, (470, 465), 15)  # Head
@@ -172,82 +167,57 @@ class WordGame:
             if len(self.lettre_fausse) >= 6:
                 pygame.draw.line(screen, self.NOIR, (470, 540), (500, 570), 5)  # Right leg
     
-    
-    # def main_game_logic(self):
-    #     for event in pygame.event.get():
-    #         for letter in self.letters:
-    #             if letter == event.unicode.lower():
-    #                 for letter2 in self.game.lettre_utilisé:
-    #                     if event.unicode.lower() == letter2 and (len(self.lettre_fausse) != 5 and event.unicode.lower() != self.who[self.are]):
-    #                         print("lettre deja utilisé")
-    #                         self.enter = 0
-    #                         self.flag = 1
-    #                         break
-    #                 if self.flag == 0:
-    #                     self.lettre_utilisé.append(event.unicode.lower())
-    #                     self.enter = 1
-    #                 else :
-    #                     self.flag = 0
-                    
-    #                 if self.enter == 1:
-    #                     # if letter in self.game.chosen_word:
-    #                     if len(self.lettre_fausse) == 5 and event.unicode.lower() == self.who[self.are]:
-    #                         self.draw()
-    #                         self.you.append(event.unicode.lower())
-    #                         self.are += 1
-    #                         if len(self.who) == len(self.you):
-    #                             screen.blit(perso2, persoRect2)
-    #                             GameManager().is_running = False
-    #                             pygame.display.update()
-    #                             pygame.time.wait(500)
-    #                     elif letter in self.chosen_word:
-    #                         print("yes")
-    #                         self.lettre_mot.append(event.unicode.lower())
-    #                         print(f"ceci est {self.lettre_mot}")
-    #                         self.draw()
-    #                     else:
-    #                         print("Nope!")
-    #                         self.you
-    #                         self.lettre_fausse.append(event.unicode.lower())
-    #                         print(f"ceci est {self.lettre_mot}")
-    #                         self.draw()
-    #                 else:
-    #                     self.enter = 0
-    #                 print("Vous avez tapé {}".format(event.unicode))
-    #                 print(self.lettre_utilisé)
+    # VICTORY SCREEN
+    def show_victory_screen(self):
+        victory_message = "Victoire ! Félicitations !"
+        self.display_end_screen(victory_message, (0, 255, 0))  
 
-    #                 print(self.lettre_fausse)
-    #                 print(self.lettre_mot)
-    #                 print(self.you)        
+    # DEFEAT SCREEN
+    def show_defeat_screen(self):
+        defeat_message = "Défaite ! Vous avez perdu !"
+        self.display_end_screen(defeat_message, (255, 0, 0)) 
 
-     
-    #  ===== NOT YET IMPLEMENTED  =====
-    def guess_the_word(self):
+    # Display an ending screen either if victory or defeat
+    def display_end_screen(self, message, text_color):
         while True:
-            letter_box = []
-            letter = input("Devine une lettre: ")
-            if letter in self.chosen_word:
-                print(f"GG! la lettre {letter} est bien dans le mot à deviner!")
-                self.score += 1
-                print(f"Ton score est maintenant de {self.score}")
-                letter_box.append(letter)
-                
-                if self.score == len(self.chosen_word):
-                    print("OMG! T'as gagné la game!")
-                    break
-                
-                elif letter in letter_box:
-                    print("Cette lettre a déjà été devinée")
-                    print(f"le score est toujours de {self.score}")
-    
-            else: 
-                self.life -= 1
-                print("Nope! image N du pendu ici")
-                print(self.life)
-                if self.life == 0:
-                    print("déso mais t'as perdu!")
-                    break      
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN: 
+                        self.lettre_utilisé = []
+                        self.lettre_mot = []
+                        self.lettre_fausse = []
+                        self.dashImg = []
+                       
+                        self.chosen_word = random.choice(self.word_list)
+                        return True # Restart
+                    elif event.key == pygame.K_ESCAPE:  
+                        return False # Quit
+            
+            screen.fill((0, 0, 0))
 
+            message_font = pygame.font.SysFont("arial", 60)
+            message_surface = message_font.render(message, True, text_color)
+            message_rect = message_surface.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+            screen.blit(message_surface, message_rect)
+
+            instructions = "Appuyez sur Entrée pour recommencer ou sur Échap pour quitter"
+            instructions_font = pygame.font.SysFont("arial", 30)
+            instructions_surface = instructions_font.render(instructions, True, (255, 255, 255))
+            instructions_rect = instructions_surface.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 60))
+            screen.blit(instructions_surface, instructions_rect)
+
+            word_text = f"Le mot était : {self.chosen_word}"
+            word_surface = instructions_font.render(word_text, True, (255, 255, 255))
+            word_rect = word_surface.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 120))
+            screen.blit(word_surface, word_rect)
+
+            pygame.display.flip()
+
+
+# Button class for the menu items
 class Button():
     def __init__(self,x,y,image,scale):
         width = image.get_width()
@@ -259,10 +229,8 @@ class Button():
     
     def draw(self, surface):
         action = False
-        # get mouse pos
         pos = pygame.mouse.get_pos()
         
-        #  check mouseover and clicked condition
         if self.rect.collidepoint(pos):
             if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
                 self.clicked = True
@@ -270,12 +238,12 @@ class Button():
                 
         if pygame.mouse.get_pressed()[0] == 0:
             self.clicked = False
-            
-        # draw button on screen
+
         surface.blit(self.image, (self.rect.x, self.rect.y))
         return action
   
-# button images
+   
+# Buttons images
 
 # resume
 resume_img = pygame.image.load("./images/buttons/Button_continuer.png").convert_alpha()
@@ -283,11 +251,11 @@ resume_button = Button(300,150, resume_img, 0.5)
 
 # jouer
 play_img = pygame.image.load("./images/buttons/Button_jouer.png").convert_alpha()
-play_button = Button(300,50, play_img, 0.5) 
+play_button = Button(300,20, play_img, 0.5) 
 
 # options
 options_img = pygame.image.load("./images/buttons/Button_options.png").convert_alpha()
-options_button = Button(300,250, options_img, 0.5) 
+options_button = Button(300,220, options_img, 0.5) 
 
 #  difficulty
 # difficulty_img = pygame.image.load("./images/buttons/Button_difficulty.png").convert_alpha()
@@ -295,7 +263,7 @@ options_button = Button(300,250, options_img, 0.5)
 
 #  add_word
 add_word_img = pygame.image.load("./images/buttons/Button_add_word.png").convert_alpha()
-add_word_button = Button(300,450, add_word_img, 0.5) 
+add_word_button = Button(300,420, add_word_img, 0.5) 
 
 #  audio
 audio_img = pygame.image.load("./images/buttons/Button_audio.png").convert_alpha()
@@ -307,8 +275,10 @@ retour_button = Button(300,350, retour_img, 0.5)
 
 # quit
 quit_img = pygame.image.load("./images/buttons/Button_quitter.png").convert_alpha()
-quit_button = Button(300,650, quit_img, 0.5) 
-    
+quit_button = Button(300,620, quit_img, 0.5) 
+   
+   
+# Main Class to run the game    
 class GameManager:
     def __init__(self):
         self.game = WordGame()
@@ -320,38 +290,41 @@ class GameManager:
         self.game.store_words()
         while self.game.is_running :
             
-            # screen.fill((52,78,91))
-            # arrière-plan vierge
+            # The First BG
             screen.blit(background, (0, 0))
             
+            # The menu logic here
             if self.game_paused == True:
                 #  check menu state
                 if self.menu_state == "main":
+                    
                     if play_button.draw(screen): 
                         self.menu_state = "play"               
-                        self.game_paused = False
-                        
+                        self.game_paused = False   
+                        self.reset_game()      
                     if add_word_button.draw(screen):
                         self.game.add_word() 
-                        
                     if options_button.draw(screen):
                         self.menu_state = "options"
                     if quit_button.draw(screen):
-                        self.game.is_running = False
+                        pygame.quit()
+                        sys.exit()
+                        
                 if self.menu_state == "options":
                     if audio_button.draw(screen):
                         print("change audio here")
                     if retour_button.draw(screen):
                         self.menu_state = "main"
+                        
                 if self.menu_state == "play":
-                    if screen.blit(background, (0, 0)):
-                        pass
+                    # if screen.blit(background, (0, 0)):
+                    #     pass
                     if retour_button.draw(screen):
                         self.menu_state = "main"
                         self.game_paused = True
-            else:
-                # GAME LOGIC HERE
-                # draw_text("Press SPACE to pause", font, TEXT_COL, 250, 350)
+                        
+            # GAME LOGIC HERE
+            else:   
                 # L'échafaud
                 pygame.draw.rect(screen, BROWN, (250, 600, 400, 20))  # Plateforme
                 # Poteaux
@@ -370,12 +343,11 @@ class GameManager:
                 pygame.draw.circle(screen, BLACK, (470, 470), 10)  # Noeud de la corde
                 self.game.draw()         
                 self.game.show_lines()
-                pygame.display.flip() #mise a jour de l'image a chaque fin de boucle
-                if len(self.game.lettre_fausse) == 6:
-                    pygame.time.wait(3000)
-                    self.game.is_running = False
                 
-            
+                pygame.display.flip() # To update the screen after each loop
+
+                
+            # Event Handling / Keys pressed
             for event in pygame.event.get():
                 
                 if event.type == pygame.KEYDOWN:
@@ -383,9 +355,29 @@ class GameManager:
                         self.game_paused = True
                 
                 if event.type == QUIT:
-                    self.game.is_running = False
+                    # self.game.is_running = False
+                    pygame.quit()
+                    sys.exit()
                 
-                if event.type == KEYDOWN: #Si une touche est enfoncé
+                
+                # CHECK VICTORY OR DEFEAT HERE
+                if self.game.life <= 0:
+                    result = self.game.show_defeat_screen() 
+                elif set(self.game.chosen_word) == set(self.game.lettre_mot):
+                    result = self.game.show_victory_screen() 
+                else:
+                    result = None
+
+                if result == True: 
+                    self.game_paused = True 
+                    self.menu_state = "main" 
+                elif result == False:  
+                    pygame.quit()
+                    sys.exit()
+                
+                
+                # Keyboard letters during game
+                if event.type == KEYDOWN:
                     for letter in self.game.letters:
                         if letter == event.unicode.lower():
                             for letter2 in self.game.lettre_utilisé:
@@ -413,50 +405,37 @@ class GameManager:
                                 elif letter in self.game.chosen_word:
                                     print("yes")
                                     self.game.lettre_mot.append(event.unicode.lower())
-                                    print(f"ceci est {self.game.lettre_mot}")
+                                    # print(f"ceci est {self.game.lettre_mot}")
                                     self.game.draw()
+                                    
                                 else:
                                     print("Nope!")
                                     self.game.you
                                     self.game.lettre_fausse.append(event.unicode.lower())
-                                    print(f"ceci est {self.game.lettre_mot}")
+                                    # print(f"ceci est {self.game.lettre_mot}")
                                     self.game.draw()
                             else:
                                 self.enter = 0
-                            print("Vous avez tapé {}".format(event.unicode))
-                            print(self.game.lettre_utilisé)
-
-                            print(self.game.lettre_fausse)
-                            print(self.game.lettre_mot)
-                            print(self.game.you)
-                
-                
+                            # print("Vous avez tapé {}".format(event.unicode))
+                            # print(self.game.lettre_utilisé)
+                            # print(self.game.lettre_fausse)
+                            # print(self.game.lettre_mot)
+                            # print(self.game.you)
+                          
             pygame.display.update()
         pygame.quit()
         sys.exit
+    
+    def reset_game(self):
+        self.game.lettre_utilisé = []  
+        self.game.lettre_mot = []     
+        self.game.lettre_fausse = [] 
+        self.game.dashImg = []       
+        self.game.life = 7           
+        self.game.store_words()      
+    
 
-        # while True:
-        #     try:
-                
-        #         self.game.display_menu()
-        #         self.game.store_words()
-                
-        #         user_choice = input("Entrez votre choix: ")
-                
-        #         if user_choice == "1":
-        #             self.game.shuffle_words()
-        #             self.game.show_lines()
-        #             # self.game.guess_the_word()
-        #         elif user_choice == "2":    
-        #             self.game.add_word()
-        #         else:
-        #             print("Merci de faire un choix entre 1 et 2.")
-            
-        #     except KeyboardInterrupt:
-        #         print("\nMerci d'avoir joué!")
-        #         break
-
-
+# Main function to trigger the GameManager and whole program
 def main():
     game_manager = GameManager()
     game_manager.run()
