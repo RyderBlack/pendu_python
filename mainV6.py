@@ -8,7 +8,7 @@ pygame.init()
 WIDTH, HEIGHT = 930, 800
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Échafaud")
-background = pygame.image.load("Background_HiRes2.jpg")
+background = pygame.image.load("./images/Background_HiRes2.jpg")
 background = pygame.transform.scale(background, (WIDTH, HEIGHT))
 
 # COLORS
@@ -17,12 +17,12 @@ BROWN = (139, 69, 19)
 GRAY = (169, 169, 169)
 
 # Secret ending asset if failed game
-perso = pygame.image.load("un_pendu2.png").convert_alpha() # 108x400 px
+perso = pygame.image.load("./images/un_pendu2.png").convert_alpha() # 108x400 px
 persoRect = perso.get_rect() #crée un rectangle autour d'une image
 persoRect.topleft = (450, 420) #dimension du rectangle
 
 # Secret ending asset for hardcore mode
-perso2 = pygame.image.load("its_me.png").convert_alpha()
+perso2 = pygame.image.load("./images/its_me.png").convert_alpha()
 persoRect2 = perso.get_rect() 
 persoRect2.topleft = (0, 0) 
 
@@ -35,7 +35,7 @@ def draw_text(text,font,text_col,x,y):
     img = font.render(text, True, text_col)
     screen.blit(img, (x,y))
     
- 
+
 # Main Game Class   
 class WordGame:
     def __init__(self):
@@ -120,7 +120,7 @@ class WordGame:
         start_x = (WIDTH - (len(self.chosen_word) * 40)) // 2
         
         for i in range(len(self.chosen_word)):
-            self.dashImg.append(pygame.image.load('minus-sign.png'))
+            self.dashImg.append(pygame.image.load('./images/minus-sign.png'))
             screen.blit(self.dashImg[i], (start_x + i * 40, 300))
             
             # To display the right letters on top of the lines
