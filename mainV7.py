@@ -25,13 +25,13 @@ GRAY = (169, 169, 169)
 
 # Secret ending asset if failed game
 perso = pygame.image.load("./images/un_pendu2.png").convert_alpha() # 108x400 px
-persoRect = perso.get_rect() #crée un rectangle autour d'une image
-persoRect.topleft = (450, 420) #dimension du rectangle
+persoRect = perso.get_rect() # draw a rectangle around image
+persoRect.topleft = (450, 420) # size of rectangle
 
 # Secret ending asset for hardcore mode
-perso2 = pygame.image.load("./images/its_me.png").convert_alpha()
-persoRect2 = perso.get_rect() 
-persoRect2.topleft = (0, 0) 
+perso2 = pygame.image.load("./images/its_me.png").convert()
+perso2_scaled = pygame.transform.scale(perso2, (930,800))
+
 
 # FONT & TEXT
 police = pygame.font.Font(None, 35)
@@ -75,8 +75,8 @@ class WordGame:
     def store_words(self):
         with open('words.txt','r') as file:
             self.word_list = file.read().splitlines()
-            self.chosen_word = random.choice(self.word_list)
-            print(self.chosen_word)
+            self.chosen_word = random.choice(self.word_list).strip()
+            print(self.chosen_word.strip())
     
     # display an input screen and add a new word in word_list AND in words.txt file       
     def add_word(self):
@@ -140,6 +140,7 @@ class WordGame:
                         if current_letter == guessed_letter:
                             letter_render = police.render(guessed_letter, True, self.NOIR)
                             screen.blit(letter_render, (start_x + position * 42, 280))
+                            
     
     # Draw the full hangman body            
     def draw(self):
@@ -155,32 +156,45 @@ class WordGame:
                            (self.x - 10, self.y + 25))
             self.x += 25
             
-        # To display secret asset #1
-        if len(self.lettre_fausse) >= 6:
-            screen.blit(perso, persoRect)
-            
-        # Display the hangman body parts HERE    
-        else:
-            if len(self.lettre_fausse) >= 1:
-                pygame.draw.circle(screen, self.NOIR, (470, 465), 15)  # Head
-            if len(self.lettre_fausse) >= 2:
-                pygame.draw.line(screen, self.NOIR, (470, 480), (470, 540), 5)  # Body
-            if len(self.lettre_fausse) >= 3:
-                pygame.draw.line(screen, self.NOIR, (470, 500), (430, 520), 5)  # Left arm
-            if len(self.lettre_fausse) >= 4:
-                pygame.draw.line(screen, self.NOIR, (470, 500), (510, 520), 5)  # Right arm
-            if len(self.lettre_fausse) >= 5:
-                pygame.draw.line(screen, self.NOIR, (470, 540), (440, 570), 5)  # Left leg
-            if len(self.lettre_fausse) >= 6:
-                pygame.draw.line(screen, self.NOIR, (470, 540), (500, 570), 5)  # Right leg
+            # To display secret asset #1
+            if len(self.lettre_fausse) >= 7:
+                print("lettre fausse : ",len(self.lettre_fausse))
+                clear_rect = pygame.Rect(430, 450, 80, 130)
+                screen.blit(background.subsurface(clear_rect), clear_rect)
+                pygame.draw.line(screen, GRAY, (470, 380), (470, 460), 5) 
+                screen.blit(perso, persoRect)
+                
+ 
+            # Display the hangman body parts HERE    
+            else:
+                if len(self.lettre_fausse) >= 1:
+                    pygame.draw.line(screen, GRAY, (470, 380), (470, 460), 5)  # Rope line
+                    # pygame.draw.circle(screen, BLACK, (470, 470), 10)  # Rope knot    
+                if len(self.lettre_fausse) >= 2:
+                    pygame.draw.circle(screen, self.NOIR, (470, 465), 15)  # Head
+                if len(self.lettre_fausse) >= 3:
+                    pygame.draw.line(screen, self.NOIR, (470, 480), (470, 540), 5)  # Body
+                if len(self.lettre_fausse) >= 4:
+                    pygame.draw.line(screen, self.NOIR, (470, 500), (430, 520), 5)  # Left arm
+                if len(self.lettre_fausse) >= 5:
+                    pygame.draw.line(screen, self.NOIR, (470, 500), (510, 520), 5)  # Right arm
+                if len(self.lettre_fausse) >= 6:
+                    pygame.draw.line(screen, self.NOIR, (470, 540), (440, 570), 5)  # Left leg
+                
+                if len(self.lettre_fausse) >= 7:
+                    pygame.draw.line(screen, self.NOIR, (470, 540), (500, 570), 5)  # Right leg
+                
+    
     
     # VICTORY SCREEN
     def show_victory_screen(self):
+        pygame.time.wait(1500)
         victory_message = "Victoire ! Félicitations !"
         self.display_end_screen(victory_message, (0, 255, 0))  
 
     # DEFEAT SCREEN
     def show_defeat_screen(self):
+        pygame.time.wait(1500)
         defeat_message = "Défaite ! Vous avez perdu !"
         self.display_end_screen(defeat_message, (255, 0, 0)) 
 
@@ -201,17 +215,20 @@ class WordGame:
                         self.chosen_word = random.choice(self.word_list)
                         return True # Restart
                     elif event.key == pygame.K_ESCAPE:  
+                        pygame.quit()
+                        sys.exit()
                         return False # Quit
+                    
             
             screen.fill((0, 0, 0))
 
-            message_font = pygame.font.SysFont("arial", 60)
+            message_font = pygame.font.SysFont("arialblack", 50)
             message_surface = message_font.render(message, True, text_color)
             message_rect = message_surface.get_rect(center=(WIDTH // 2, HEIGHT // 2))
             screen.blit(message_surface, message_rect)
 
-            instructions = "Appuyez sur Entrée pour recommencer ou sur Échap pour quitter"
-            instructions_font = pygame.font.SysFont("arial", 30)
+            instructions = "Appuyez sur Entrée pour revenir au menu ou sur Échap pour quitter"
+            instructions_font = pygame.font.SysFont("arialblack", 20)
             instructions_surface = instructions_font.render(instructions, True, (255, 255, 255))
             instructions_rect = instructions_surface.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 60))
             screen.blit(instructions_surface, instructions_rect)
@@ -248,11 +265,10 @@ class AnimatedCrowd():
         
         
     def draw_character(self):
-
         pygame.draw.circle(screen, (0, 0, 0), (self.x, self.y), 10)  # Head
 
         # Body (shirt)
-        pygame.draw.line(screen, self.shirt_color, (self.x, self.y + 10), (self.x, self.y + 40), 5)  # Corps
+        pygame.draw.line(screen, self.shirt_color, (self.x, self.y + 10), (self.x, self.y + 40), 5)  # Body
 
         # Arms (Black)
         pygame.draw.line(screen, (0, 0, 0), (self.x, self.y + 15), (self.x - 10, self.y + 30), 3)  # Left Arm
@@ -263,7 +279,7 @@ class AnimatedCrowd():
         pygame.draw.line(screen, self.pants_color, (self.x, self.y + 40), (self.x + 10, self.y + 60), 3)  # Jambe droite
 
     def draw_audience(self):
-        # Dessine un public en plusieurs rangées avec des déplacements animés.
+        # Draw a crowd in several rows with animated movements
         for row in range(self.rows):
             for col in range(self.cols):
                 index = row * self.cols + col
@@ -275,12 +291,12 @@ class AnimatedCrowd():
                 self.draw_character()
 
     def update_animations(self):
-        # Met à jour les déplacements aléatoires
+        # Randomize crowd movements
         for i in range(len(self.animations)):
-            self.animations[i][0] += random.uniform(-0.5, 0.5)  # Mouvement horizontal
-            self.animations[i][1] += random.uniform(-0.5, 0.5)  # Mouvement vertical
+            self.animations[i][0] += random.uniform(-0.5, 0.5)  # Horizontal movement 
+            self.animations[i][1] += random.uniform(-0.5, 0.5)  # Vertical movement
 
-            # Limite les déplacements
+            # Limit movements
             self.animations[i][0] = max(-self.max_movement, min(self.max_movement, self.animations[i][0]))
             self.animations[i][1] = max(-self.max_movement, min(self.max_movement, self.animations[i][1]))
 
@@ -357,8 +373,8 @@ class GameManager:
         self.clock = pygame.time.Clock()
         
     def run(self):
-
-        self.game.store_words()
+        
+        # self.game.store_words()
         while self.game.is_running :
             
             # The First BG
@@ -388,8 +404,6 @@ class GameManager:
                         self.menu_state = "main"
                         
                 if self.menu_state == "play":
-                    # if screen.blit(background, (0, 0)):
-                    #     pass
                     if retour_button.draw(screen):
                         self.menu_state = "main"
                         self.game_paused = True
@@ -397,26 +411,45 @@ class GameManager:
             # GAME LOGIC HERE
             else:   
                 self.anim.update_animations()
-                # L'échafaud
-                pygame.draw.rect(screen, BROWN, (250, 600, 400, 20))  # Plateforme
-                # Poteaux
-                pygame.draw.rect(screen, BROWN, (250, 400, 20, 200))  # Poteau gauche
-                pygame.draw.rect(screen, BROWN, (250, 380, 250, 20))  # Poutre horizontale
-                # Pieds
-                pygame.draw.rect(screen, BROWN, (320, 620, 20, 80))  # Pied gauche avant
-                pygame.draw.rect(screen, BROWN, (630, 620, 20, 80))  # Pied droit avant
-                pygame.draw.rect(screen, BROWN, (250, 620, 20, 80))  # Pied gauche arrière
-                pygame.draw.rect(screen, BROWN, (580, 620, 20, 80))  # Pied droit arrière
-                # Escalier
+                # The base
+                pygame.draw.rect(screen, BROWN, (250, 600, 400, 20))  # Plateform
+                # Poles
+                pygame.draw.rect(screen, BROWN, (250, 400, 20, 200))  # Left pole
+                pygame.draw.rect(screen, BROWN, (250, 380, 250, 20))  # Horizontal pole
+                # Feet
+                pygame.draw.rect(screen, BROWN, (320, 620, 20, 80))  # Left feet front
+                pygame.draw.rect(screen, BROWN, (630, 620, 20, 80))  # Right feet front
+                pygame.draw.rect(screen, BROWN, (250, 620, 20, 80))  # Left feet back
+                pygame.draw.rect(screen, BROWN, (580, 620, 20, 80))  # Right feet back
+                # Stairs
                 for i in range(5):
                     pygame.draw.rect(screen, BROWN, (220, 620 + i * 20, 80, 10))
-                # Corde
-                pygame.draw.line(screen, GRAY, (470, 380), (470, 460), 5)  # Ligne de la corde
-                pygame.draw.circle(screen, BLACK, (470, 470), 10)  # Noeud de la corde
+                
                 self.anim.draw_audience()
                 
                 self.game.draw()         
                 self.game.show_lines()
+                
+                # CHECK VICTORY OR DEFEAT HERE
+                if self.game.life == 0:
+                    pygame.time.wait(500)
+                    result = self.game.show_defeat_screen() 
+                    self.game_paused = True 
+                    self.menu_state = "main" 
+                elif set(self.game.chosen_word) == set(self.game.lettre_mot):
+                    pygame.time.wait(500)
+                    result = self.game.show_victory_screen() 
+                    self.game_paused = True 
+                    self.menu_state = "main" 
+                else:
+                    result = None
+
+                if result: 
+                    self.game_paused = True 
+                    self.menu_state = "main" 
+                elif result == False:  
+                    pygame.quit()
+                    sys.exit()
                 
                 pygame.display.flip() # To update the screen after each loop
                 self.clock.tick(120)
@@ -433,23 +466,7 @@ class GameManager:
                     # self.game.is_running = False
                     pygame.quit()
                     sys.exit()
-                
-                
-                # CHECK VICTORY OR DEFEAT HERE
-                if self.game.life <= 0:
-                    result = self.game.show_defeat_screen() 
-                elif set(self.game.chosen_word) == set(self.game.lettre_mot):
-                    result = self.game.show_victory_screen() 
-                else:
-                    result = None
-
-                if result == True: 
-                    self.game_paused = True 
-                    self.menu_state = "main" 
-                elif result == False:  
-                    pygame.quit()
-                    sys.exit()
-                
+                    
                 
                 # Keyboard letters during game
                 if event.type == KEYDOWN:
@@ -473,7 +490,7 @@ class GameManager:
                                     self.game.you.append(event.unicode.lower())
                                     self.game.are += 1
                                     if len(self.game.who) == len(self.game.you):
-                                        screen.blit(perso2, persoRect2)
+                                        screen.blit(perso2_scaled, (0,0))
                                         self.game.is_running = False
                                         pygame.display.update()
                                         pygame.time.wait(500)
@@ -487,6 +504,8 @@ class GameManager:
                                     print("Nope!")
                                     self.game.you
                                     self.game.lettre_fausse.append(event.unicode.lower())
+                                    self.game.life -= 1
+                                    print(self.game.life)
                                     # print(f"ceci est {self.game.lettre_mot}")
                                     self.game.draw()
                             else:
@@ -496,7 +515,9 @@ class GameManager:
                             # print(self.game.lettre_fausse)
                             # print(self.game.lettre_mot)
                             # print(self.game.you)
-                          
+                
+                
+                    
             pygame.display.update()
         pygame.quit()
         sys.exit
@@ -506,7 +527,7 @@ class GameManager:
         self.game.lettre_mot = []     
         self.game.lettre_fausse = [] 
         self.game.dashImg = []       
-        self.game.life = 7           
+        self.game.life = 7        
         self.game.store_words()      
     
 
