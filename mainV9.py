@@ -64,6 +64,7 @@ class WordGame:
         self.letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
         self.lettre_mot = []
         self.lettre_fausse = []
+        self.sonor_effect = pygame.mixer.Sound('./images/applause.mp3')
         self.x = 0
         self.y = 0
         
@@ -192,9 +193,8 @@ class WordGame:
         pygame.time.wait(100)
         pygame.mixer.music.stop()
         main_music = pygame.mixer.Sound('./images/gagnant.mp3')
-        sonor_effect = pygame.mixer.Sound('./images/applause.mp3')
         main_music.play(-1)  # Boucle infinie pour la musique principale
-        sonor_effect.play()
+        self.sonor_effect.play()
         victory_message = "Victoire ! Félicitations !"
         self.display_end_screen(victory_message, (0, 255, 0))  
         main_music.stop()
@@ -223,6 +223,7 @@ class WordGame:
                     sys.exit()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN: 
+                        self.sonor_effect.stop()
                         pygame.mixer.music.stop()
                         pygame.mixer.music.load('./images/ost.mp3')
                         
@@ -451,9 +452,9 @@ class GameManager:
             # Event Handling / Keys pressed
             for event in pygame.event.get():
                 
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_SPACE:
-                        self.game_paused = True
+                #if event.type == pygame.KEYDOWN:
+                #    if event.key == pygame.K_SPACE:
+                #        self.game_paused = True
                 
                 if event.type == QUIT:
                     # self.game.is_running = False
