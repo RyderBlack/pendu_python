@@ -439,7 +439,7 @@ class GameManager:
                     for letter in self.game.letters:
                         if letter == event.unicode.lower():
                             for letter2 in self.game.lettre_utilisé:
-                                if event.unicode.lower() == letter2 and (len(self.game.lettre_fausse) != 5 and event.unicode.lower() != self.game.who[self.game.are]):
+                                if event.unicode.lower() == letter2 and (len(self.game.lettre_fausse) != 6 and event.unicode.lower() != self.game.who[self.game.are]):
                                     print("lettre deja utilisé")
                                     self.game.enter = 0
                                     self.game.flag = 1
@@ -451,7 +451,7 @@ class GameManager:
                                 self.game.flag = 0
                             
                             if self.game.enter == 1:
-                                if len(self.game.lettre_fausse) == 5 and event.unicode.lower() == self.game.who[self.game.are]:
+                                if len(self.game.lettre_fausse) == 6 and event.unicode.lower() == self.game.who[self.game.are]:
                                     self.game.draw()
                                     self.game.you.append(event.unicode.lower())
                                     self.game.are += 1
