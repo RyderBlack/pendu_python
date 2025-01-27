@@ -483,8 +483,10 @@ class GameManager:
                                     self.game.you.append(event.unicode.lower())
                                     self.game.are += 1
                                     if len(self.game.who) == len(self.game.you):
+                                        pygame.mixer.music.stop()
                                         screen.blit(perso2_scaled, (0,0))
-                                        scream = pygame.music.Sound('./images/sound.mp3')
+                                        scream = pygame.mixer.Sound('images/sound.MP3')
+                                        scream.set_volume(1)
                                         scream.play()
                                         self.game.is_running = False
                                         pygame.display.update()
