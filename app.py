@@ -2,7 +2,7 @@ import random
 import pygame
 from pygame.locals import *
 import sys
-
+#-----------------------------------------JOSEPH----------------------------------------------------------------------------------------------
 # pygame init, screen and music
 pygame.init()
 # pygame.mixer.init()
@@ -44,7 +44,7 @@ def draw_text(text,font,text_col,x,y):
     img = font.render(text, True, text_col)
     screen.blit(img, (x,y))
     
-
+#------------------------------------------------RHYAD---------------------------------------------------------------------
 # Main Game Class   
 class WordGame:
     def __init__(self):
@@ -124,7 +124,7 @@ class WordGame:
             screen.blit(input_surface, (input_box.x + 10, input_box.y + 10))
 
             pygame.display.flip()
-            
+      #------------------THIBAUT--------------------------------------------------------      
     # Display the lines below the letters and show guessed letters as well
     def show_lines(self):
         start_x = (WIDTH - (len(self.chosen_word) * 40)) // 2
@@ -187,7 +187,7 @@ class WordGame:
                     pygame.draw.line(screen, self.NOIR, (470, 540), (500, 570), 5)  # Right leg
                 
     
-    
+    #-------------------------------------JOSEPH---------------------------------------------------------------------------
     # VICTORY SCREEN
     def show_victory_screen(self):
         pygame.time.wait(100)
@@ -263,7 +263,7 @@ class WordGame:
 
             pygame.display.flip()
 
-
+#------------------------------------------------------JOSEPH------------------------------------------------------------------------------------------
 class AnimatedCrowd():
     def __init__(self):
         self.x = 0
@@ -324,7 +324,7 @@ class AnimatedCrowd():
             self.animations[i][1] = max(-self.max_movement, min(self.max_movement, self.animations[i][1]))
 
 
-
+#---------------------------------------RYHAD----------------------------------------------------------------------------------------------------
 # Button class for the menu items
 class Button():
     def __init__(self,x,y,image,scale):
@@ -400,7 +400,7 @@ class GameManager:
                     if quit_button.draw(screen):
                         pygame.quit()
                         sys.exit()
-                    
+        #---------------------------------JOSEPH-------------------------------------------------        
                         
             # GAME LOGIC HERE
             else:   
@@ -423,7 +423,7 @@ class GameManager:
                 
                 self.game.draw()         
                 self.game.show_lines()
-                
+                #-----------------------JOSEPH--------------------------------------------------------------------
                 # CHECK VICTORY OR DEFEAT HERE
                 if self.game.life == 0:
                     pygame.time.wait(500)
@@ -461,7 +461,7 @@ class GameManager:
                     pygame.quit()
                     sys.exit()
                     
-                
+     #--------------------------------TIBAULT------------------------------------------------------------------------------------           
                 # Keyboard letters during game
                 if event.type == KEYDOWN:
                     for letter in self.game.letters:
