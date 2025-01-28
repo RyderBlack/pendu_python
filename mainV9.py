@@ -64,7 +64,7 @@ class WordGame:
         self.letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
         self.lettre_mot = []
         self.lettre_fausse = []
-        self.sonor_effect = pygame.mixer.Sound('./images/applause.mp3')
+        self.sonor_effect = pygame.mixer.Sound('./audios/applause.mp3')
         self.x = 0
         self.y = 0
         
@@ -192,7 +192,7 @@ class WordGame:
     def show_victory_screen(self):
         pygame.time.wait(100)
         pygame.mixer.music.stop()
-        main_music = pygame.mixer.Sound('./images/gagnant.mp3')
+        main_music = pygame.mixer.Sound('./audios/gagnant.mp3')
         main_music.play(-1)  # Boucle infinie pour la musique principale
         self.sonor_effect.play()
         victory_message = "Victoire ! Félicitations !"
@@ -204,7 +204,7 @@ class WordGame:
     def show_defeat_screen(self):
          pygame.time.wait(1000)
          pygame.mixer.music.stop()
-         pygame.mixer.music.load('./images/perdant.mp3')
+         pygame.mixer.music.load('./audios/perdant.mp3')
          pygame.mixer.music.play(-1)
          defeat_message = "defaite ! Paix a ton ame"
          self.display_end_screen(defeat_message, (255, 0, 0))
@@ -225,7 +225,7 @@ class WordGame:
                     if event.key == pygame.K_RETURN: 
                         self.sonor_effect.stop()
                         pygame.mixer.music.stop()
-                        pygame.mixer.music.load('./images/ost.mp3')
+                        pygame.mixer.music.load('./audios/ost.mp3')
                         
                         pygame.mixer.music.play(-1)
                       
@@ -375,7 +375,7 @@ class GameManager:
         self.menu_state = "main"
         self.clock = pygame.time.Clock()
         
-        pygame.mixer.music.load('./images/intro.mp3')    
+        pygame.mixer.music.load('./audios/intro.mp3')    
         pygame.mixer.music.play(-1)
     
     def run(self):
@@ -486,7 +486,7 @@ class GameManager:
                                     if len(self.game.who) == len(self.game.you):
                                         pygame.mixer.music.stop()
                                         screen.blit(perso2_scaled, (0,0))
-                                        scream = pygame.mixer.Sound('images/sound.MP3')
+                                        scream = pygame.mixer.Sound('./audios/sound.MP3')
                                         scream.set_volume(1)
                                         scream.play()
                                         self.game.is_running = False
